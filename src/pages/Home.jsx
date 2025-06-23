@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import Restaurants from "../components/Restaurants";
+
 const Home = () => {
+  const [restaurant, setRestaurants] = useState([]);
+  useEffect(() => {
+    // call api : getAllRestaurants เรียก API 
+    fetch("http://localhost:3000/restaurants")
+      .then((res) => {
+        // convert เเปลงเป็น Json
+        return res.json();
+      })
+      .then((response) => {
+        setRestaurants(response);
+      })
+      .catch((err) => {
+        //เช็ค error
+        console.log(err.message);
+      });
+  }, []);
   return (
     <div className="container mx-auto">
       <NavBar></NavBar>
@@ -32,7 +49,7 @@ const Home = () => {
         </label>
       </div>
       <div></div>
-      <Restaurants></Restaurants>
+      <Restaurants restaurants={restaurant} />
     </div>
   );
 };
