@@ -4,8 +4,23 @@ import Restaurants from "../components/Restaurants";
 
 const Home = () => {
   const [restaurant, setRestaurants] = useState([]);
+  // const [keyword, setKeyword] = useState("");
+  const [filetedRestarant, setFiletedRestarant] = useState([]);
+  const handleSearch = (keyword) => {
+    if (keyword === "") {
+      return;
+    }
+    const result = restaurant.filter((restaurant) => {
+      return (
+        restaurant.title.toLowerCase().includes(keyword.toLowerCase()) ||
+        restaurant.type.toLowerCase().includes(keyword.toLowerCase())
+      );
+    });
+    setFiletedRestarant(result);
+    console.log("keyword", keyword);
+  };
   useEffect(() => {
-    // call api : getAllRestaurants เรียก API 
+    // call api : getAllRestaurants เรียก API
     fetch("http://localhost:3000/restaurants")
       .then((res) => {
         // convert เเปลงเป็น Json
@@ -13,6 +28,7 @@ const Home = () => {
       })
       .then((response) => {
         setRestaurants(response);
+        setFiletedRestarant(response);
       })
       .catch((err) => {
         //เช็ค error
@@ -21,7 +37,6 @@ const Home = () => {
   }, []);
   return (
     <div className="container mx-auto">
-      <NavBar></NavBar>
       <div>
         <h1 className="title justify-center text-3xl text-center m-5 gap-x-5">
           Grab Restaurant
@@ -45,11 +60,17 @@ const Home = () => {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" required placeholder="Search" />
+          <input
+            type="search"
+            name="keyword"
+            onChange={(e) => handleSearch(e.target.value)}
+            required
+            placeholder="Search"
+          />
         </label>
       </div>
       <div></div>
-      <Restaurants restaurants={restaurant} />
+      <Restaurants restaurants={filetedRestarant} />
     </div>
   );
 };
